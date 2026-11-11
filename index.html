@@ -88,7 +88,7 @@
                     Làm Sạch Sâu, Khử Khuẩn & Bảo Dưỡng Quạt Điện <span class="text-blue-400">Ngay Tại Nhà</span>
                 </h2>
                 <p class="text-slate-300 text-base sm:text-lg max-w-2xl">
-                    Quạt bám bụi bẩn, kêu to, chạy yếu gây hại đường hô hấp? Thợ kỹ thuật chuyên nghiệp đến tận nơi tháo lắp, vệ sinh sạch bóng, tra dầu chỉ từ <strong>30.000đ/cái</strong>.
+                    Quạt bám bụi bẩn, kêu to, chạy yếu gây hại đường hô hấp? Thợ kỹ thuật chuyên nghiệp đến tận nơi tháo lắp, vệ sinh sạch bóng, tra dầu chỉ từ <strong>35.000đ/cái</strong>.
                 </p>
                 <div class="flex flex-wrap gap-4 pt-2">
                     <a href="#booking" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-3.5 rounded-xl shadow-lg shadow-emerald-500/30 transition flex items-center gap-2 text-base">
@@ -501,7 +501,11 @@
 
     <!-- JavaScript - Global Functions -->
     <script>
-        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxVSPv6WZw5VQIe-WgN9xb0Jr45i6UTW1ljddLYPyC9PgZY6g67mW_ZYiNe-fX0giBqFw/exec";
+        // ==========================================
+        // CẤU HÌNH GOOGLE SHEET WEB APP URL (TÙY CHỌN)
+        // ==========================================
+        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxVSPv6WZw5VQIe-WgN9xb0Jr45i6UTW1ljddLYPyC9PgZY6g67mW_ZYiNe-fX0giBqFw/exec"; // Dán Link Web App Google Script vào trong ngoặc kép này nếu muốn lưu tự động vào Google Sheet.
+
         // Set default date to today
         const bookingDateInput = document.getElementById('bookingDate');
         if (bookingDateInput) {
@@ -565,8 +569,8 @@
             if (formPriceEl) formPriceEl.innerText = priceText;
         }
 
-        // Global handleBooking function to fix Uncaught ReferenceError
-        function handleBooking(event) {
+        // Global handleBooking function
+        async function handleBooking(event) {
             event.preventDefault();
 
             const fullName = document.getElementById('fullName').value;
@@ -575,7 +579,26 @@
             const bookingDate = document.getElementById('bookingDate').value;
             const bookingTime = document.getElementById('bookingTime').value;
             const services = document.getElementById('servicesDetail').value;
+            const totalPrice = document.getElementById('formEstimatedPrice').innerText;
             const note = document.getElementById('note').value;
+
+            const bookingData = {
+                fullName, phone, address, bookingDate, bookingTime, services, totalPrice, note
+            };
+
+            // Gửi dữ liệu vào Google Sheet nếu có cấu hình URL
+            if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL.trim() !== "") {
+                try {
+                    await fetch(GOOGLE_SHEET_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(bookingData)
+                    });
+                } catch (err) {
+                    console.error("Lỗi gửi Google Sheet:", err);
+                }
+            }
 
             const zaloMessage = `📌 [ĐẶT LỊCH VỆ SINH QUẠT]%0A- Họ tên: ${encodeURIComponent(fullName)}%0A- SĐT: ${encodeURIComponent(phone)}%0A- Địa chỉ: ${encodeURIComponent(address)}%0A- Ngày hẹn: ${encodeURIComponent(bookingDate)} (${bookingTime})%0A- Dịch vụ: ${encodeURIComponent(services)}%0A- Ghi chú: ${encodeURIComponent(note)}`;
             

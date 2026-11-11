@@ -100,7 +100,7 @@
                 </div>
                 <div class="grid grid-cols-3 gap-4 pt-6 border-t border-white/10 text-slate-300 text-xs sm:text-sm">
                     <div><strong class="text-white block text-lg">100%</strong> Thợ giỏi tận tâm</div>
-                    <div><strong class="text-white block text-lg">30 Phút</strong> Có mặt tận nơi</div>
+                    <div><strong class="text-white block text-lg">15 Phút</strong> Có mặt tận nơi</div>
                     <div><strong class="text-white block text-lg">Bảo hành</strong> Động cơ dài lâu</div>
                 </div>
             </div>
@@ -191,7 +191,7 @@
                     <div class="text-2xl font-extrabold text-blue-600 mb-4">45.000đ <span class="text-xs text-slate-400 font-normal">/ chiếc</span></div>
                     <ul class="space-y-2.5 text-xs text-slate-600 mb-6 border-t border-slate-100 pt-4">
                         <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Vệ sinh toàn diện cánh, lồng</li>
-                        <li class="fas fa-check text-emerald-500">Xử lý tóc rối, bụi kẹt trục</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Xử lý tóc rối, bụi kẹt trục</li>
                         <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Tra dầu chuyên dụng cao cấp</li>
                     </ul>
                 </div>
@@ -249,8 +249,8 @@
                     <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl font-bold">
                         <i class="fas fa-bolt"></i>
                     </div>
-                    <h4 class="font-bold text-lg text-slate-900">Phục Vụ Siêu Tốc 45 Phút</h4>
-                    <p class="text-slate-600 text-sm leading-relaxed">Đội ngũ thợ kỹ thuật tại các khu vực Lục Nam và Bắc Ninh, có mặt nhanh chóng ngay sau khi bạn đặt lịch.</p>
+                    <h4 class="font-bold text-lg text-slate-900">Phục Vụ Siêu Tốc 15 Phút</h4>
+                    <p class="text-slate-600 text-sm leading-relaxed">Đội ngũ thợ kỹ thuật túc trực tại các khu vực Lục Nam và Bắc Ninh, có mặt nhanh chóng ngay sau khi bạn đặt lịch.</p>
                 </div>
 
                 <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200/60 space-y-4">
@@ -309,7 +309,7 @@
             <div class="text-center mb-12 space-y-3">
                 <span class="bg-blue-500/20 text-blue-200 text-xs font-semibold px-3.5 py-1.5 rounded-full border border-blue-400/30">Đặt Lịch Nhanh Chóng</span>
                 <h2 class="text-3xl sm:text-4xl font-extrabold">Đăng Ký Vệ Sinh Quạt Tận Nhà</h2>
-                <p class="text-slate-300 text-sm">Điền thông tin bên dưới, thợ kỹ thuật sẽ liên hệ xác nhận trong vòng 30 phút.</p>
+                <p class="text-slate-300 text-sm">Điền thông tin bên dưới, thợ kỹ thuật sẽ liên hệ xác nhận trong vòng 5 phút.</p>
             </div>
 
             <form id="bookingForm" onsubmit="handleBooking(event)" class="bg-white text-slate-800 p-6 sm:p-10 rounded-3xl shadow-2xl space-y-6">
@@ -482,7 +482,8 @@
             <div class="space-y-3">
                 <h4 class="font-bold text-sm text-blue-400 uppercase tracking-wider">Khu Vực Phục Vụ</h4>
                 <p class="text-slate-400 text-xs leading-relaxed">
-                    <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i> TP. Bắc Ninh (Huyện Lục Nam, Lục Ngạn...)<br>
+                    <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i> Toàn huyện Lục Nam (Thị trấn Đồi Ngô và các xã lân cận).<br>
+                    <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i> Toàn tỉnh Bắc Ninh (Thành phố Bắc Ninh, Từ Sơn, Quế Võ,...).
                 </p>
             </div>
 
@@ -498,16 +499,18 @@
         </div>
     </footer>
 
-    <!-- JavaScript for Calculator & Booking & Google Sheets integration -->
-    <!-- JavaScript for Calculator & Booking & Zalo integration -->
+    <!-- JavaScript - Global Functions -->
     <script>
-        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxVSPv6WZw5VQIe-WgN9xb0Jr45i6UTW1ljddLYPyC9PgZY6g67mW_ZYiNe-fX0giBqFw/exec"; 
-
+        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxVSPv6WZw5VQIe-WgN9xb0Jr45i6UTW1ljddLYPyC9PgZY6g67mW_ZYiNe-fX0giBqFw/exec";
         // Set default date to today
-        document.getElementById('bookingDate').valueAsDate = new Date();
+        const bookingDateInput = document.getElementById('bookingDate');
+        if (bookingDateInput) {
+            bookingDateInput.valueAsDate = new Date();
+        }
 
         function adjustQty(val) {
             const qtyInput = document.getElementById('calcQty');
+            if (!qtyInput) return;
             let current = parseInt(qtyInput.value) || 1;
             current += val;
             if (current < 1) current = 1;
@@ -517,44 +520,52 @@
         }
 
         const calcFanTypeEl = document.getElementById('calcFanType');
-        if(calcFanTypeEl) {
+        if (calcFanTypeEl) {
             calcFanTypeEl.addEventListener('change', updateCalculatorTotal);
         }
         
         const calcQtyEl = document.getElementById('calcQty');
-        if(calcQtyEl) {
+        if (calcQtyEl) {
             calcQtyEl.addEventListener('input', updateCalculatorTotal);
         }
 
         function updateCalculatorTotal() {
             const fanType = document.getElementById('calcFanType');
             const qtyInput = document.getElementById('calcQty');
-            if(!fanType || !qtyInput) return;
+            if (!fanType || !qtyInput) return;
             const pricePerUnit = parseInt(fanType.value) || 35000;
             const qty = parseInt(qtyInput.value) || 1;
             const total = pricePerUnit * qty;
             const calcTotalEl = document.getElementById('calcTotal');
-            if(calcTotalEl) calcTotalEl.innerText = total.toLocaleString('vi-VN') + 'đ';
+            if (calcTotalEl) calcTotalEl.innerText = total.toLocaleString('vi-VN') + 'đ';
         }
         updateCalculatorTotal();
 
         function selectServiceItem(serviceName, price) {
-            document.getElementById('servicesDetail').value = '1 x ' + serviceName;
-            document.getElementById('formEstimatedPrice').innerText = price.toLocaleString('vi-VN') + 'đ';
-            document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+            const serviceDetailEl = document.getElementById('servicesDetail');
+            const formPriceEl = document.getElementById('formEstimatedPrice');
+            const bookingSec = document.getElementById('booking');
+            
+            if (serviceDetailEl) serviceDetailEl.value = '1 x ' + serviceName;
+            if (formPriceEl) formPriceEl.innerText = price.toLocaleString('vi-VN') + 'đ';
+            if (bookingSec) bookingSec.scrollIntoView({ behavior: 'smooth' });
         }
 
         function syncCalcToBooking() {
             const selectEl = document.getElementById('calcFanType');
+            if (!selectEl) return;
             const selectedText = selectEl.options[selectEl.selectedIndex].text;
             const qty = document.getElementById('calcQty').value;
             const priceText = document.getElementById('calcTotal').innerText;
 
-            document.getElementById('servicesDetail').value = qty + ' x ' + selectedText;
-            document.getElementById('formEstimatedPrice').innerText = priceText;
+            const serviceDetailEl = document.getElementById('servicesDetail');
+            const formPriceEl = document.getElementById('formEstimatedPrice');
+
+            if (serviceDetailEl) serviceDetailEl.value = qty + ' x ' + selectedText;
+            if (formPriceEl) formPriceEl.innerText = priceText;
         }
 
-        // Handle Booking & Zalo integration
+        // Global handleBooking function to fix Uncaught ReferenceError
         function handleBooking(event) {
             event.preventDefault();
 
@@ -572,7 +583,7 @@
             window.open(`https://zalo.me/0917802997?text=${zaloMessage}`, '_blank');
         }
 
-        // Handle Customer Reviews Submission
+        // Global handleReviewSubmit function
         function handleReviewSubmit(event) {
             event.preventDefault();
             const name = document.getElementById('reviewerName').value;
@@ -583,6 +594,8 @@
             for(let i=0; i<rating; i++) { starsHTML += '<i class="fas fa-star"></i>'; }
 
             const reviewList = document.getElementById('reviewList');
+            if (!reviewList) return;
+
             const newCard = document.createElement('div');
             newCard.className = "bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4";
             newCard.innerHTML = `
@@ -606,6 +619,7 @@
 
         function likeReview(btn) {
             const span = btn.querySelector('span');
+            if (!span) return;
             let count = parseInt(span.innerText) || 0;
             span.innerText = count + 1;
             btn.classList.add('text-blue-600', 'font-bold');

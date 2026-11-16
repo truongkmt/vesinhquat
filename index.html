@@ -408,53 +408,20 @@
 
         <!-- Review List Container -->
         <div id="reviewList" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <!-- Review 1 -->
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="font-bold text-slate-900 text-sm">Chị Lan Anh</span>
-                        <span class="text-[11px] bg-emerald-50 text-emerald-600 font-semibold px-2 py-0.5 rounded-full"><i class="fas fa-check-circle mr-1"></i>Đã xác minh</span>
-                    </div>
-                    <div class="text-amber-400 text-xs mb-2">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="text-slate-600 text-xs leading-relaxed">"Thợ đến nhanh đúng hẹn ở Lục Nam. Vệ sinh 3 cái quạt sạch bóng, tra dầu xong quạt chạy êm ru không còn tiếng kêu kẹt kẹt nữa. Rất ưng ý!"</p>
-                </div>
-                <div class="flex items-center justify-between pt-4 border-t border-slate-100 text-xs text-slate-400">
-                    <span>Hôm qua</span>
-                    <button onclick="likeReview(this)" class="flex items-center gap-1 hover:text-blue-600 transition"><i class="far fa-thumbs-up"></i> <span>12</span></button>
-                </div>
-            </div>
-
-            <!-- Review 2 -->
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="font-bold text-slate-900 text-sm">Anh Minh Quân</span>
-                        <span class="text-[11px] bg-emerald-50 text-emerald-600 font-semibold px-2 py-0.5 rounded-full"><i class="fas fa-check-circle mr-1"></i>Đã xác minh</span>
-                    </div>
-                    <div class="text-amber-400 text-xs mb-2">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="text-slate-600 text-xs leading-relaxed">"Dịch vụ chuyên nghiệp tại Bắc Ninh. Giá công khai rõ ràng, thợ nhiệt tình lau dọn sạch sẽ gọn gàng sau khi làm xong. Sẽ ủng hộ dài dài."</p>
-                </div>
-                <div class="flex items-center justify-between pt-4 border-t border-slate-100 text-xs text-slate-400">
-                    <span>3 ngày trước</span>
-                    <button onclick="likeReview(this)" class="flex items-center gap-1 hover:text-blue-600 transition"><i class="far fa-thumbs-up"></i> <span>8</span></button>
-                </div>
-            </div>
+           
+            
 
             <!-- Review 3 -->
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
                 <div>
                     <div class="flex items-center justify-between mb-2">
-                        <span class="font-bold text-slate-900 text-sm">Cô Hoa</span>
+                        <span class="font-bold text-slate-900 text-sm">Cô Hà</span>
                         <span class="text-[11px] bg-emerald-50 text-emerald-600 font-semibold px-2 py-0.5 rounded-full"><i class="fas fa-check-circle mr-1"></i>Đã xác minh</span>
                     </div>
                     <div class="text-amber-400 text-xs mb-2">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                     </div>
-                    <p class="text-slate-600 text-xs leading-relaxed">"Quạt nhà tôi lâu năm bám đầy bụi đen dày đặc, gọi thợ đến rửa sạch bong như mới mua. Cảm ơn cửa hàng nhiều nhé!"</p>
+                    <p class="text-slate-600 text-xs leading-relaxed">"Cảm ơn cửa hàng nhiều nhé."</p>
                 </div>
                 <div class="flex items-center justify-between pt-4 border-t border-slate-100 text-xs text-slate-400">
                     <span>1 tuần trước</span>
@@ -597,7 +564,7 @@
 
             submitBtn.innerText = originalBtnText;
             submitBtn.disabled = false;
-            alert("Cảm ơn bạn đã gửi đánh giá! Phản hồi của bạn đã được lưu lại.");
+            alert("Cảm ơn bạn đã gửi đánh giá!");
             event.target.reset();
         }
 

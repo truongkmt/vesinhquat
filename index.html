@@ -506,12 +506,101 @@
         // ==========================================
         const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxVSPv6WZw5VQIe-WgN9xb0Jr45i6UTW1ljddLYPyC9PgZY6g67mW_ZYiNe-fX0giBqFw/exec"; // Dán Link Web App Google Script vào trong ngoặc kép này nếu muốn lưu tự động vào Google Sheet.
 
-        // Set default date to today
+       // Đặt ngày mặc định là hôm nay
         const bookingDateInput = document.getElementById('bookingDate');
-        if (bookingDateInput) {
-            bookingDateInput.valueAsDate = new Date();
+        if (bookingDateInput) bookingDateInput.valueAsDate = new Date();
+
+        // Tự động tải bình luận từ Google Sheets khi mở trang
+        window.addEventListener('DOMContentLoaded', loadReviewsFromSheet);
+
+        async function loadReviewsFromSheet() {
+            if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes("DÁN_LINK")) return;
+            try {
+                const response = await fetch(GOOGLE_SHEET_URL);
+                const reviews = await response.json();
+                if (reviews && reviews.length > 0) {
+                    const reviewList = document.getElementById('reviewList');
+                    // Thêm các bình luận từ Google Sheet lên đầu danh sách
+                    reviews.slice().reverse().forEach(rev => {
+                        renderReviewCard(rev.name, rev.rating, rev.comment, rev.time || "Gần đây", false);
+                    });
+                }
+            } catch (err) {
+                console.error("Không tải được bình luận từ Google Sheet:", err);
+            }
         }
 
+        function renderReviewCard(name, rating, comment, timeText, isNew = true) {
+            const reviewList = document.getElementById('reviewList');
+            if (!reviewList) return;
+
+            let starsHTML = '';
+            const starCount = parseInt(rating) || 5;
+            for (let i = 0; i < starCount; i++) {
+                starsHTML += '<i class="fas fa-star"></i>';
+            }
+
+            const newCard = document.createElement('div');
+            newCard.className = "bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4";
+            newCard.innerHTML = `
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-slate-900 text-sm">${name}</span>
+                        <span class="text-[11px] bg-emerald-50 text-emerald-600 font-semibold px-2 py-0.5 rounded-full"><i class="fas fa-check-circle mr-1"></i>Đã xác minh</span>
+                    </div>
+                    <div class="text-amber-400 text-xs mb-2">${starsHTML}</div>
+                    <p class="text-slate-600 text-xs leading-relaxed">"${comment}"</p>
+                </div>
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100 text-xs text-slate-400">
+                    <span>${timeText}</span>
+                    <button onclick="likeReview(this)" class="flex items-center gap-1 hover:text-blue-600 transition"><i class="far fa-thumbs-up"></i> <span>1</span></button>
+                </div>
+            `;
+            reviewList.prepend(newCard);
+        }
+
+        // Xử lý gửi bình luận mới lên Google Sheet
+        async function handleReviewSubmit(event) {
+            event.preventDefault();
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerText;
+            
+            const name = document.getElementById('reviewerName').value;
+            const rating = parseInt(document.getElementById('reviewerRating').value);
+            const comment = document.getElementById('reviewerComment').value;
+
+            submitBtn.innerText = "Đang gửi...";
+            submitBtn.disabled = true;
+
+            // Hiển thị ngay lập tức lên giao diện
+            renderReviewCard(name, rating, comment, "Vừa xong", true);
+
+            // Lưu vào Google Sheet
+            if (GOOGLE_SHEET_URL && !GOOGLE_SHEET_URL.includes("DÁN_LINK")) {
+                try {
+                    await fetch(GOOGLE_SHEET_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            type: "review",
+                            name: name,
+                            rating: rating,
+                            comment: comment
+                        })
+                    });
+                } catch (err) {
+                    console.error("Lỗi lưu bình luận:", err);
+                }
+            }
+
+            submitBtn.innerText = originalBtnText;
+            submitBtn.disabled = false;
+            alert("Cảm ơn bạn đã gửi đánh giá! Phản hồi của bạn đã được lưu lại.");
+            event.target.reset();
+        }
+
+        // Các hàm tính giá và đặt lịch giữ nguyên
         function adjustQty(val) {
             const qtyInput = document.getElementById('calcQty');
             if (!qtyInput) return;
@@ -524,14 +613,10 @@
         }
 
         const calcFanTypeEl = document.getElementById('calcFanType');
-        if (calcFanTypeEl) {
-            calcFanTypeEl.addEventListener('change', updateCalculatorTotal);
-        }
+        if (calcFanTypeEl) calcFanTypeEl.addEventListener('change', updateCalculatorTotal);
         
         const calcQtyEl = document.getElementById('calcQty');
-        if (calcQtyEl) {
-            calcQtyEl.addEventListener('input', updateCalculatorTotal);
-        }
+        if (calcQtyEl) calcQtyEl.addEventListener('input', updateCalculatorTotal);
 
         function updateCalculatorTotal() {
             const fanType = document.getElementById('calcFanType');
@@ -569,7 +654,6 @@
             if (formPriceEl) formPriceEl.innerText = priceText;
         }
 
-        // Global handleBooking function
         async function handleBooking(event) {
             event.preventDefault();
 
@@ -583,11 +667,11 @@
             const note = document.getElementById('note').value;
 
             const bookingData = {
+                type: "order",
                 fullName, phone, address, bookingDate, bookingTime, services, totalPrice, note
             };
 
-            // Gửi dữ liệu vào Google Sheet nếu có cấu hình URL
-            if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL.trim() !== "") {
+            if (GOOGLE_SHEET_URL && !GOOGLE_SHEET_URL.includes("DÁN_LINK")) {
                 try {
                     await fetch(GOOGLE_SHEET_URL, {
                         method: 'POST',
@@ -604,40 +688,6 @@
             
             alert("Đặt lịch thành công! Hệ thống đang chuyển đến Zalo để gửi thông tin cho thợ.");
             window.open(`https://zalo.me/0917802997?text=${zaloMessage}`, '_blank');
-        }
-
-        // Global handleReviewSubmit function
-        function handleReviewSubmit(event) {
-            event.preventDefault();
-            const name = document.getElementById('reviewerName').value;
-            const rating = parseInt(document.getElementById('reviewerRating').value);
-            const comment = document.getElementById('reviewerComment').value;
-
-            let starsHTML = '';
-            for(let i=0; i<rating; i++) { starsHTML += '<i class="fas fa-star"></i>'; }
-
-            const reviewList = document.getElementById('reviewList');
-            if (!reviewList) return;
-
-            const newCard = document.createElement('div');
-            newCard.className = "bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4";
-            newCard.innerHTML = `
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="font-bold text-slate-900 text-sm">${name}</span>
-                        <span class="text-[11px] bg-emerald-50 text-emerald-600 font-semibold px-2 py-0.5 rounded-full"><i class="fas fa-check-circle mr-1"></i>Đã xác minh</span>
-                    </div>
-                    <div class="text-amber-400 text-xs mb-2">${starsHTML}</div>
-                    <p class="text-slate-600 text-xs leading-relaxed">"${comment}"</p>
-                </div>
-                <div class="flex items-center justify-between pt-4 border-t border-slate-100 text-xs text-slate-400">
-                    <span>Vừa xong</span>
-                    <button onclick="likeReview(this)" class="flex items-center gap-1 hover:text-blue-600 transition"><i class="far fa-thumbs-up"></i> <span>1</span></button>
-                </div>
-            `;
-            reviewList.prepend(newCard);
-            alert("Cảm ơn bạn đã gửi đánh giá phản hồi!");
-            event.target.reset();
         }
 
         function likeReview(btn) {

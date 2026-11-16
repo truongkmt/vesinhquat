@@ -516,11 +516,12 @@
         async function loadReviewsFromSheet() {
             if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes("DÁN_LINK")) return;
             try {
-                const response = await fetch(GOOGLE_SHEET_URL);
+                const response = await fetch(GOOGLE_SHEET_URL, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
                 const reviews = await response.json();
                 if (reviews && reviews.length > 0) {
-                    const reviewList = document.getElementById('reviewList');
-                    // Thêm các bình luận từ Google Sheet lên đầu danh sách
                     reviews.slice().reverse().forEach(rev => {
                         renderReviewCard(rev.name, rev.rating, rev.comment, rev.time || "Gần đây", false);
                     });
